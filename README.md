@@ -7,12 +7,12 @@ sources.
 
 ## Todo
 - [ ] Optimize *everything*
-  - [ ] Keep one global QdrantClient (maybe switch to gRPC?) + Postgres connection pool
+  - [x] Keep one global QdrantClient (maybe switch to gRPC?) + Postgres connection pool
   - [ ] Remove extra LLM reasoning pass in write_queries
   - [ ] Trim chat history by summarizing old chat
   - [ ] Cache authors/sources list in memory with TTL; skip DB hit if unchanged
   - [ ] Batch embeddings in one API call by switching to OpenAI model
-  - [ ] Batch Qdrant queries
+  - [x] Batch Qdrant queries
 
 ## More info
 Please read [my blog post about this project](https://blog.williamchastain.com/Cogito-(Ergo-Sum)) for information about

@@ -1,3 +1,16 @@
+"""
+Query vector database node for the research agent.
+
+This module provides functionality to query a Qdrant vector database with
+multiple queries concurrently, using global connection pools for optimal
+performance. Queries are batched and executed in parallel using ThreadPoolExecutor.
+
+Key optimizations:
+- Uses global QdrantClient singleton (with gRPC support)
+- Uses global Postgres connection pool
+- Batches queries for concurrent execution
+- Fuzzy matching for author and source filters
+"""
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from qdrant_client.http.models import Filter, MatchValue, FieldCondition
@@ -76,6 +89,10 @@ def query_vector_db(state: ResearchAgentState):
     queries = state.get("queries")
     old_resources = state.get("resources", [])
     new_resources = old_resources.copy()
+
+    # If no queries, return current resources unchanged
+    if not queries:
+        return {"resources": new_resources}
 
     # --- Keep track of ids for de-duplication efforts ---
     seen_ids = set()
