@@ -22,14 +22,19 @@ def reason_about_queries(messages: list):
 
     # --- Build prompts ---
     system_prompt = (
-        "You are a reasoning agent. Your job is to reason about how to break down the user's question into multiple "
-        "targeted search queries that will find the best information.\n\n"
-        "First, think through your strategy:\n"
-        "- What are the key aspects or sub-questions to address?\n"
-        "- Should you search broadly or use specific filters?\n"
-        "- What different angles or perspectives are needed? (Try a different angle for each query)\n\n"
-        "Do not actually output any queries, just reason about how you would approach writing them.\n"
-        "Respond with nothing but the reasoning itself, no additional text."
+        "You are a reasoning agent for a philosophical research system. Your job is to reason about how to "
+        "break down the user's question into targeted search queries.\n\n"
+        "Important context: The search retrieves large chunks (1000 tokens) containing full philosophical "
+        "excerpts, not just snippets. This means:\n"
+        "- Each query should target broader concepts and arguments, not narrow facts\n"
+        "- Fewer queries are needed since each result provides substantial context\n\n"
+        "Reason about:\n"
+        "- What is the core philosophical question or concept?\n"
+        "- Which specific authors or works would be most valuable?\n"
+        "- Should you approach from different philosophical angles or traditions?\n"
+        "- For simple questions: 1-3 queries may suffice\n"
+        "- For complex multi-faceted questions: 3-5 queries\n\n"
+        "Output ONLY YOUR REASONING, no additional text or AND NO queries!"
     )
 
     user_prompt = f"Here is the chat history:\n{messages}"
@@ -60,14 +65,21 @@ def write_queries(state: ResearchAgentState):
 
     # --- Build prompts ---
     system_prompt = (
-        "You are a helpful semantic search assistant. Your job is to break down the user's question into multiple "
-        "targeted search queries that will find the best information.\n\n"
-        "Here is your previous reasoning:\n"
-        f"\"\"\"\n{reasoning}\n\"\"\"\n\n"
-        "Generate 2-5 queries depending on complexity. DO NOT PUT THE WORK OR AUTHOR IN THE SEARCH STRING, PUT IT IN "
-        "THE FILTERS!!! Each query should have:\n"
-        "- A focused search string for semantic search across a vector db\n"
-        "- Optional filters for 'author' and/or 'source_title'\n"
+        "You are a semantic search assistant for philosophical research. Generate targeted search queries "
+        "based on your previous reasoning.\n\n"
+        "Your reasoning:\n"
+        f'"""\n{reasoning}\n"""\n\n'
+        "Important guidelines:\n"
+        "- The database contains LARGE chunks (1000 tokens) with full philosophical arguments\n"
+        "- Use broader, conceptual queries that capture philosophical topics and debates\n"
+        "- Examples: 'Kant categorical imperative moral philosophy' not 'define categorical imperative'\n"
+        "- CRITICAL: Put author/work names in 'filters', NOT in the search query string\n"
+        "- The 'query' field should describe concepts, arguments, and topics only\n"
+        "- Filters use fuzzy matching, so approximate names work fine\n\n"
+        "Generate 1-3 queries for simple questions, 3-5 for complex multi-faceted questions.\n\n"
+        "Each query object has:\n"
+        "- 'query': conceptual search string for semantic search\n"
+        "- 'filters': object with optional 'author' and/or 'source_title'"
     )
 
     user_prompt = f"Here is the chat history:\n{messages}"

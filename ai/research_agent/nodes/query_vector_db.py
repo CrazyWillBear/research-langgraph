@@ -88,6 +88,7 @@ def query_vector_db(state: ResearchAgentState):
                     if point.id not in seen_ids:
                         seen_ids.add(point.id)
                         new_resources.append(point)
+
     finally:
         # --- Close Qdrant client ---
         qdrant_client.close()

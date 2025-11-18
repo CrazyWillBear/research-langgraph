@@ -4,7 +4,7 @@ from ai.research_agent.model_config import MODEL_CONFIG
 from ai.research_agent.schemas.graph_state import ResearchAgentState
 
 # Max queries allowed
-MAX_QUERIES = 5
+MAX_QUERIES = 10
 
 def assess_resources(state: ResearchAgentState):
     """
@@ -41,6 +41,6 @@ def assess_resources(state: ResearchAgentState):
 
     # Parse decision
     answer = text.lower().strip()
-    satisfied = answer.startswith("yes") or (len(state["queries_made"]) >= 5)
+    satisfied = answer.startswith("yes") or (len(state["queries_made"]) >= MAX_QUERIES)
 
     return {"query_satisfied": satisfied}

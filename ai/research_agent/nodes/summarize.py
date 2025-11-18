@@ -23,8 +23,8 @@ def summarize(state: ResearchAgentState):
                      "end using MLA8 format.\n\n"
                      "Reason step by step in <thinking>...</thinking> tags. Consider:\n"
                      "- What resources are most relevant to the question?\n"
-                     "- How do those resources inform your answer?\n"
-                     "- Is the response misleading in any way?\n\n"
+                     "- Based on those resources, what's the answer?\n"
+                     "- How do the resources support that answer?\n\n"
                      "After reasoning, output your final response.")
 
     # --- Build chat history ---

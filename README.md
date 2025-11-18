@@ -5,6 +5,17 @@ This is the LangGraph/LangChain component of what will become a larger academic 
 is to assist scholars in their research with AI tools, enabling them to gather and analyze information from various
 sources.
 
+## Todo
+- [ ] Optimize *everything*
+  - [ ] Keep one global QdrantClient (optionally gRPC) + Postgres connection pool
+  - [ ] Remove extra LLM reasoning pass (single query generation call, cap to 1–3 queries)
+  - [ ] Trim chat history with a rolling text summary (replace full past messages)
+  - [ ] Cache authors/sources list in memory with TTL; skip DB hit if unchanged
+  - [ ] Batch embeddings in one API call; add a simple in-process LRU embedding cache
+  - [ ] Limit resources passed to LLM: top K (e.g. 5–8) by score, truncate long texts
+  - [ ] Batch Qdrant queries
+  - 
+
 ## More info
 Please read [my blog post about this project](https://blog.williamchastain.com/Cogito-(Ergo-Sum)) for information about
 the project's current state, goals, and functionality.
