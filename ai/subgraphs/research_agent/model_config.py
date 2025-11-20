@@ -7,5 +7,5 @@ MODEL_CONFIG = {
     "write_queries": gpt5_nano,
     "assess_resources_classifier": gpt5_nano,
     "assess_resources_feedback": gpt5_mini,
-    "summarize": gpt5_mini
+    "write_response": gpt5_mini
 }

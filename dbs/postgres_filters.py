@@ -44,7 +44,7 @@ class PostgresFilters:
             self.conn.poll()
 
             while self.conn.notifies:
-                notify = self.conn.notifies.pop(0)
+                _ = self.conn.notifies.pop(0)
                 self.update_filters()
 
         thread = threading.Thread(target=self.listen, daemon=True)

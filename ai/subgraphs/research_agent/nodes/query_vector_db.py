@@ -8,10 +8,6 @@ from ai.subgraphs.research_agent.model_config import MODEL_CONFIG
 from ai.subgraphs.research_agent.schemas.graph_state import ResearchAgentState
 from dbs.qdrant import Qdrant
 
-# --- Constants ---
-VEC_DB_URL = "http://localhost:6333"
-VEC_COLLECTION = "philosophy"
-
 
 def summarize_resource(model, resource_text):
     system_msg = SystemMessage(content=(

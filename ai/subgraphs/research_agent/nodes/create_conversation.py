@@ -30,7 +30,7 @@ def create_conversation(state: ResearchAgentState):
     last_user = ''
     for m in reversed(incoming_messages):
         if isinstance(m, HumanMessage):
-            last_user = m.content
+            last_user = getattr(m, "content", "")
             break
 
     # Build prior context

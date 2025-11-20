@@ -6,10 +6,12 @@ from sentence_transformers import SentenceTransformer
 class Embeder:
     """Embedder using BAAI/bge-large-en-v1.5 model."""
 
+    DEVICE = "cuda"
+
     def __init__(self):
         """Initialize the BAAI/bge-large-en-v1.5 model for embedding."""
 
-        self.model = SentenceTransformer("BAAI/bge-large-en-v1.5", device="cuda")
+        self.model = SentenceTransformer("BAAI/bge-large-en-v1.5", device=self.DEVICE)
 
 
     def embed(self, text: str):

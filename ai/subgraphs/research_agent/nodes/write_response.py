@@ -7,16 +7,14 @@ from ai.subgraphs.research_agent.model_config import MODEL_CONFIG
 from ai.subgraphs.research_agent.schemas.graph_state import ResearchAgentState
 
 
-def summarize(state: ResearchAgentState):
-    """
-    Summarize the most relevant sources from the research results to inform a response.
-    Combines conversation history with research resources to generate a cited answer.
-    """
+def write_response(state: ResearchAgentState):
+    """Compose the assistant's final answer by synthesizing conversation context and gathered research, using quoted
+    evidence and formatted citations. Returns a dict with the generated response text under the key 'response'."""
     print("::Reasoning through and writing final response...", end="", flush=True)
     start = time.perf_counter()
 
     # --- Get model ---
-    model = MODEL_CONFIG["summarize"]
+    model = MODEL_CONFIG["write_response"]
 
     # --- Extract state variables ---
     conversation = state.get("conversation", {})
