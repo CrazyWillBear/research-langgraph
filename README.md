@@ -1,4 +1,4 @@
-# Cogito Agent
+# Cogito AI
 
 ## Table of Contents
 
@@ -13,7 +13,7 @@
 
 ## Overview
 
-Cogito Agent is a Q&A style research assistant for philosophy research. It uses LangGraph/LangChain components, vector search, and LLMs to gather, assess, and summarize primary philosophical sources to build detailed answers with citations.
+Cogito AI is a Q&A style agentic research assistant for philosophy research. It uses LangGraph/LangChain components, vector search, and LLMs to gather, assess, and summarize primary philosophical sources to build detailed answers with citations.
 
 ## Features
 
