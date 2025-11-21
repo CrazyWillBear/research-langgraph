@@ -21,11 +21,8 @@ gpt5_nano = ChatOpenAI(
 
 
 def gpt_extract_content(result):
-    """
-    Extract the main text content from a model.invoke() result,
-    ignoring any 'reasoning' or auxiliary objects.
-    Returns a single string.
-    """
+    """Extract the main text content from a model.invoke() result, ignoring any 'reasoning' or auxiliary objects."""
+
     content_list = getattr(result, "content", result)
 
     # If it's already a string, return it

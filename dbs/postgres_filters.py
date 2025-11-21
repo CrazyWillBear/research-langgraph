@@ -14,6 +14,7 @@ class PostgresFilters:
     USER = "munir"
     PASSWORD = "123"
 
+    # --- Methods ---
     def __init__(self):
         self.conn = psycopg2.connect(
             host=self.HOST,
@@ -26,11 +27,15 @@ class PostgresFilters:
         self.all_authors = []
         self.all_sources = []
 
-        self.update_filters()
+        self._update_filters()
 
     def __enter__(self):
         """Enter the runtime context related to this object."""
         return self
+
+    def __exit__(self):
+        """Exit the runtime context related to this object."""
+        self.conn.close()
 
     def listen(self) -> None:
         """Listen for changes in the filters table and update authors and sources accordingly."""
@@ -45,19 +50,15 @@ class PostgresFilters:
 
             while self.conn.notifies:
                 _ = self.conn.notifies.pop(0)
-                self.update_filters()
+                self._update_filters()
 
         thread = threading.Thread(target=self.listen, daemon=True)
         thread.start()
 
-    def update_filters(self) -> None:
+    def _update_filters(self) -> None:
         """Update the list of authors and sources from the database."""
         cur = self.conn.cursor()
         cur.execute("SELECT DISTINCT authors FROM filters;")
         self.all_authors = [row[0] for row in cur.fetchall()]
         cur.execute("SELECT DISTINCT sources FROM filters;")
         self.all_sources = [row[0] for row in cur.fetchall()]
-
-    def __exit__(self):
-        """Exit the runtime context related to this object."""
-        self.conn.close()

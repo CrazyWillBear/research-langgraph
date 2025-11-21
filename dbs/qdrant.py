@@ -15,6 +15,7 @@ class Qdrant:
     PORT = 6334
     COLLECTION = "philosophy"
 
+    # --- Methods ---
     def __init__(self):
         """Initialize Qdrant database client."""
         # --- Initialize database clients ---
@@ -25,6 +26,11 @@ class Qdrant:
     def __enter__(self):
         """Enter context manager for Qdrant client."""
         return self
+
+    def __exit__(self):
+        """Exit context manager for Qdrant client."""
+        # --- Close Qdrant client ---
+        self.client.close()
 
     def query(self, query: QueryAndFilters) -> list[dict]:
         """Query the Qdrant vector database with fuzzy-matched filters."""
@@ -150,8 +156,3 @@ class Qdrant:
                     results_out.append(point.payload)
 
         return results_out
-
-    def __exit__(self):
-        """Exit context manager for Qdrant client."""
-        # --- Close Qdrant client ---
-        self.client.close()

@@ -10,6 +10,9 @@ from dbs.qdrant import Qdrant
 
 
 def summarize_resource(model, resource_text):
+    """Summarize a single research resource using the provided model."""
+
+    # Construct prompt (system and user message)
     system_msg = SystemMessage(content=(
         "You are a summarizing agent. Summarize the following resource with these guidelines:\n"
         "- Keep it concise (should be around half the size of original)\n"
@@ -19,6 +22,8 @@ def summarize_resource(model, resource_text):
     ))
 
     user_msg = HumanMessage(content=f"Here is a resource to summarize:\n---\n{resource_text}\n---\n")
+
+    # Invoke model and return extracted output
     res = model.invoke([system_msg, user_msg], reasoning={"effort": "minimal"})
     return gpt_extract_content(res)
 
@@ -28,19 +33,21 @@ def query_vector_db(state: ResearchAgentState, qdrant: Qdrant):
     Uses fuzzy matching to find best-matching authors and sources from PostgreSQL metadata.
     Returns accumulated resources and increments query count.
     """
+
+    # Start timing and log
     print("::Querying vector database and summarizing sources...", end="", flush=True)
     start = time.perf_counter()
 
-    # --- Get model ---
+    # Get configured model
     model = MODEL_CONFIG["query_vector_db"]
 
-    # --- Extract state variables ---
+    # Extract graph state variables
     queries = state.get("queries")
     new_resources = []
     old_summaries = state.get("resource_summaries", [])
     new_summaries = old_summaries.copy()
 
-    # Query the db
+    # Query vector DB
     responses = qdrant.batch_query(queries)
     for payload in responses:
         content = payload.get("text", "")
@@ -49,12 +56,14 @@ def query_vector_db(state: ResearchAgentState, qdrant: Qdrant):
         resource_text = f'"""\n{content}\n"""\n- {author}, {source_title}\n'
         new_resources.append(resource_text)
 
+    # Summarize new resources in parallel
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_resource = {executor.submit(summarize_resource, model, r): r for r in new_resources}
         for future in as_completed(future_to_resource):
             summary = future.result()
             new_summaries.append(gpt_extract_content(summary))
 
+    # End timing and log
     end = time.perf_counter()
     print(f"\r\033[K::Vector database queried and sources summarized in {end - start:.2f}s")
 

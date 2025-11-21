@@ -9,47 +9,47 @@ from dbs.query import QueryAndFilters
 
 
 class QueryAndFiltersList(BaseModel):
-    """
-    Schema for a list of QueryAndFilters objects.
-    Used when multiple queries with filters are needed.
-    """
+    """Output schema for LLM query generation."""
 
     queries: list[QueryAndFilters]
 
+
+# Sample response to fit schema
+SAMPLE_RESPONSE = \
+"""
+[
+    {
+        "query": "...",
+        "filters": {
+            "author": "...",
+            "source_title": "..."
+        }
+    },
+    {
+        "query": "..."
+    }
+]
+"""
 
 def write_queries(state: ResearchAgentState):
     """
     Write a vector DB query based on the user's message and previous research.
     Generates a structured query with optional filters for author and source title.
     """
+
+    # Start timing and log
     print("::Writing queries...", end="", flush=True)
     start = time.perf_counter()
 
-    # Get model
+    # Get configured model
     model = MODEL_CONFIG["write_queries"]
     structured_model = model.with_structured_output(QueryAndFiltersList)
 
-    # --- Extract state variables ---
+    # Extract graph state variables
     feedback = state.get("queries_feedback", "No feedback yet.")
     conversation = state.get("conversation", {})
 
-    # --- Build prompts ---
-    sample_response = \
-"""
-[
-  {
-    "query": "...",
-    "filters": {
-      "author": "...",
-      "source_title": "..."
-    }
-  },
-  {
-    "query": "..."
-  }
-]
-"""
-
+    # Construct prompt (system message and user message)
     system_msg = SystemMessage(content=(
         "You are a semantic search assistant for philosophical research. Generate targeted search queries based on the"
         "user's last message and previous context.\n\n"
@@ -57,7 +57,7 @@ def write_queries(state: ResearchAgentState):
         "- Use broader, conceptual queries that capture philosophical topics and debates\n"
         "- CRITICAL: Put author/source names in 'filters', NOT in the search query string\n\n"
         "Generate 1 query for simple questions, up to 3 for complex multi-faceted questions.\n\n"
-        f"Output strictly as JSON. Here's an example:\n{sample_response}\n"
+        f"Output strictly as JSON. Here's an example:\n{SAMPLE_RESPONSE}\n"
     ))
 
     conv_summary = conversation.get("summarized_context", "No prior context.")
@@ -68,11 +68,11 @@ def write_queries(state: ResearchAgentState):
         f"Previous queries feedback:\n{feedback}"
     ))
 
-    # --- Invoke LLM ---
+    # Invoke LLM with structured output
     result = structured_model.invoke([system_msg, user_msg], reasoning={"effort": "low"})
 
+    # Stop timing and log
     end = time.perf_counter()
     print(f"\r\033[K::Wrote queries in {end - start:.2f}s")
 
-    # --- Update state with new query ---
     return {"queries": result.queries}

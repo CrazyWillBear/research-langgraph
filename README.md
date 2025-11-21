@@ -93,5 +93,6 @@ Cogito AI is a Q&A style agentic research assistant for philosophy research. It 
 - Embeddings: `embed/embed.py` wraps [SentenceTransformers](https://huggingface.co/sentence-transformers) ([BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) by default).
 - `main.py` provides a simple interactive CLI loop for conversation and invoking the research agent.
 
-## Licensing
-This project is licensed under the PolyForm Noncommercial License 1.0.0. This project, while open-source, *may not* be used for commercial purposes. See the [LICENSE](LICENSE.md) file for details.
+## Licensing + Copyright
+Copyright (c) William Chastain. All rights reserved.
+This software is licensed under the PolyForm Noncommercial License 1.0.0. This project, while open-source, *may not* be used for commercial purposes. See the [LICENSE](LICENSE.md) file for details.

@@ -10,14 +10,13 @@ from ai.subgraphs.research_agent.schemas.graph_state import ResearchAgentState
 
 
 def create_conversation(state: ResearchAgentState):
-    """
-    Normalize incoming invocation dict into the `conversation` key required by ResearchAgentState.
-    Accepts flexible caller input: `messages`, `history`, or a prebuilt `conversation`.
-    """
+    """Initialize a new conversation by summarizing prior messages and extracting the last user message."""
+
+    # Start timing and log
     print("::Starting conversation and summarization...", end="", flush=True)
     start = time.perf_counter()
 
-    # Get model
+    # Get configured model
     model = MODEL_CONFIG["create_conversation"]
 
     # Extract incoming raw messages
@@ -40,7 +39,7 @@ def create_conversation(state: ResearchAgentState):
     ]
     context = '\n'.join(context_parts) if context_parts else ''
 
-    # Build prompts
+    # Build prompt (system and user message)
     system_msg = SystemMessage(content=(
         "You are a conversation summarizer. Your job is to summarize the conversation between the user and the AI "
         "assistant, focusing on the key points discussed, questions asked, and any relevant context that would help.\n"
@@ -53,23 +52,24 @@ def create_conversation(state: ResearchAgentState):
         f"{context}\n\n"
     ))
 
-    # Invoke model
+    # Invoke model and extract content
     result = model.invoke([system_msg, user_msg], reasoning={"effort": "minimal"})
     summarized = gpt_extract_content(result)
 
-    # Set conversation object
+    # Create conversation object
     conversation: Conversation = {
         'last_user_message': last_user,
         'summarized_context': summarized,
     }
 
-    # Initialize remaining required keys if absent
+    # Initialize remaining required keys in state
     state.setdefault('response', '')
     state.setdefault('queries', [])
     state.setdefault('queries_feedback', '')
     state.setdefault('query_satisfied', False)
     state.setdefault('resource_summaries', list())
 
+    # End timing and log
     end = time.perf_counter()
     print(f"\r\033[K::Conversation initialized in {end - start:.2f}s")
 

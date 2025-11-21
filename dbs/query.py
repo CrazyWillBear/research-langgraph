@@ -14,7 +14,7 @@ class Filters(BaseModel):
 class QueryAndFilters(BaseModel):
     """
     Schema for the vector DB query and filters.
-    Combines a search query string with optional filter criteria.
+    Combines a search query string with optional filter.
     """
 
     query: str = Field(description="Search query string", default="")

@@ -4,10 +4,7 @@ from ai.subgraphs.research_agent.schemas.conversation import Conversation
 
 
 class ResearchAgentState(TypedDict):
-    """
-    State schema for the Research Agent subgraph.
-    Tracks conversation history, queries, resources, and evaluation flags.
-    """
+    """State schema for the Research Agent subgraph."""
 
     messages: list              # Conversation messages
     conversation: Conversation  # Contains final user message + summarized context
